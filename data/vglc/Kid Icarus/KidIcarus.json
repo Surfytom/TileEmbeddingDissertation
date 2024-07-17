@@ -1,10 +1,10 @@
 {
     "tiles" : {
-        "#" : ["solid","ground"],
+        "#" : ["solid"],
         "-" : ["passable","empty"],
-        "D" : ["solid","openable","door"],
-        "H" : ["solid","damaging","hazard"],
-        "M" : ["solidtop","passable","moving","platform"],
-        "T" : ["solidtop","passable","platform"]
+        "D" : ["solid","openable"],
+        "H" : ["solid","hazard"],
+        "M" : ["solid","passable","moving"],
+        "T" : ["solid","passable"]
     }
 }
