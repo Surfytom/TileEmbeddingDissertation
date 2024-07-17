@@ -66,7 +66,7 @@ def get_tile_data(game_data_directory, json_directory, shuffle_data=True):
                 curr_centre = str(context.split("/")[-2])
 
                 #                 print("Centre Tile",curr_centre)
-                tile_data = tile_data.append(
+                tile_data = tile_data._append(
                     {
                         "game_identifier": current_game,
                         "image_path": context_image_path,

@@ -1,0 +1,8 @@
+data/context_data
+data/*.csv
+data/*.pickle
+
+data/tomData/*
+src/test.csv
+
+*.pyc
