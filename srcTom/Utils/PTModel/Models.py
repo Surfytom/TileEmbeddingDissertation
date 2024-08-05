@@ -82,3 +82,39 @@ class TileEmbeddingVAE(nn.Module):
         yPredImage, yPredText = self.decode(encodedEmbedding)
         
         return yPredImage, yPredText
+    
+class TestModel(nn.Module):
+
+    def __init__(self):
+        super().__init__()
+
+        self.layer1 = nn.Conv2d(3, 32, kernel_size=3, stride=3)
+        self.layer2 = nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1)
+        self.layer3 = nn.Conv2d(32, 16, kernel_size=3, stride=1, padding=1)
+        self.flattenLayer = nn.Flatten()
+        self.batchNorm1 = nn.BatchNorm2d(32)
+        self.batchNorm2 = nn.BatchNorm2d(32)
+        self.batchNorm3 = nn.BatchNorm2d(16)
+        pass
+
+    def forward(self, x):
+        print("In Forward!")
+        x = self.layer1(x)
+        x = self.batchNorm1(x)
+        x = nn.functional.relu(x)
+        print(x.shape)
+
+        x = self.layer2(x)
+        x = self.batchNorm2(x)
+        x = nn.functional.relu(x)
+        print(x.shape)
+
+        x = self.layer3(x)
+        x = self.batchNorm3(x)
+        x = nn.functional.relu(x)
+        print(x.shape)
+
+        x = self.flattenLayer(x)
+        print(x.shape)
+
+        return x

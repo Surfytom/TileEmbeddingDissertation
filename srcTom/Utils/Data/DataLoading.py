@@ -9,6 +9,14 @@ import torch
 
 from ast import literal_eval
 
+spritePaths = {
+    "kidicarus": "../data/tomData/sprites/kidicarus", 
+    "loderunner": "../data/tomData/sprites/loderunner",
+    "megaman": "../data/tomData/sprites/megaman",
+    "supermariobros": "../data/tomData/sprites/supermariobros",
+    "thelegendofzelda": "../data/tomData/sprites/thelegendofzelda",
+}
+
 def TextTileToImage(tileArray, tileSize, spritePath, savePath=None):
 
     outputImage = np.empty((tileSize*tileArray.shape[0], tileSize*tileArray.shape[1], 3), dtype=np.uint8)
@@ -56,19 +64,22 @@ def LoadTrainTestData(pathToDataCsv, testSetSize=0.1, shuffle=False, randomState
     dataFrame['affordances'] = dataFrame['affordances'].apply(lambda x: literal_eval(str(x)))
     dataFrame['tiles'] = dataFrame['tiles'].apply(lambda x: np.array(literal_eval(str(x))))
 
-    return train_test_split(dataFrame, test_size=testSetSize, random_state=randomState, shuffle=shuffle)
+    dataFrame['image'] = [TextTileToImage(row['tiles'], 16, spritePaths[row['gamename']]) for index, row in dataFrame.iterrows()]
+
+    uniqueAffordances = set([affordance for affordanceList in dataFrame['affordances'] for affordance in affordanceList])
+
+    trainData, testData = train_test_split(dataFrame, test_size=testSetSize, random_state=randomState, shuffle=shuffle)
+
+    affordanceDict, tfidfWeightArray = TFIDFWeightVector(trainData, uniqueAffordances)
+
+    trainData["encodedAffordances"] = [np.sum(np.array([np.where(np.array(list(affordanceDict.keys())) == affordance, 1, 0) for affordance in row['affordances']]), axis=0) for index, row in trainData.iterrows()]
+    testData["encodedAffordances"] = [np.sum(np.array([np.where(np.array(list(affordanceDict.keys())) == affordance, 1, 0) for affordance in row['affordances']]), axis=0) for index, row in testData.iterrows()]
+
+    return {"trainData": trainData, "testData": testData, "weightArray": tfidfWeightArray}
 
 def LoadCrossValTrainTestData(pathToDataCsv, shuffle=False, randomState=1):
 
     crossValDataDict = {}
-
-    spritePaths = {
-        "kidicarus": "../data/tomData/sprites/kidicarus", 
-        "loderunner": "../data/tomData/sprites/loderunner",
-        "megaman": "../data/tomData/sprites/megaman",
-        "supermariobros": "../data/tomData/sprites/supermariobros",
-        "thelegendofzelda": "../data/tomData/sprites/thelegendofzelda",
-    }
 
     dataFrame = pd.read_csv(pathToDataCsv)
 
