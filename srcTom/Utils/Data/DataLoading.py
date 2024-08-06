@@ -53,7 +53,7 @@ def TFIDFWeightVector(data, uniqueClasses):
     weightVector = [v for v in newDict.values()]
 
     tensorFromList = torch.tensor(weightVector, dtype=torch.float32)
-    print(tensorFromList)
+    print(f"TFIDF Weight Array: {tensorFromList}")
 
     return newDict, tensorFromList
 
@@ -90,13 +90,13 @@ def LoadCrossValTrainTestData(pathToDataCsv, shuffle=False, randomState=1):
 
     uniqueAffordances = set([affordance for affordanceList in dataFrame['affordances'] for affordance in affordanceList])
 
-    print(uniqueAffordances)
+    print(f"Unique Affordance Array: {uniqueAffordances}")
 
     if shuffle:
         dataFrame = dataFrame.sample(frac=1, random_state=randomState).reset_index()
 
     for gameName in dataFrame['gamename'].unique():
-        testData = dataFrame[dataFrame['gamename'] == gameName]
+        testData = dataFrame.copy()[dataFrame['gamename'] == gameName]
         trainData = dataFrame.drop(testData.index)
 
         affordanceDict, tfidfWeightArray = TFIDFWeightVector(trainData, uniqueAffordances)
