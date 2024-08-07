@@ -5,4 +5,6 @@ data/*.pickle
 data/tomData/*
 src/test.csv
 
+outputs/*
+
 *.pyc

@@ -100,7 +100,7 @@ def GetAffordances(tileArray, affordanceDictionary, centerTileOnly=True):
 
     return outputAffordancs
 
-def GenerateData(LevelPathSpriteDict, kernelSize=3, centerTileOnly=True):
+def GenerateData(LevelPathSpriteDict, savePath="test.csv", kernelSize=3, centerTileOnly=True):
 
     totalUniqueCombos = 0
     dataFramesArray = []
@@ -159,4 +159,4 @@ def GenerateData(LevelPathSpriteDict, kernelSize=3, centerTileOnly=True):
 
     print(f"Total Unique Combos of Tiles: {totalUniqueCombos}")
 
-    return pd.concat(dataFramesArray)
+    pd.concat(dataFramesArray).to_csv(savePath)
