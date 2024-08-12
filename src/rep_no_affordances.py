@@ -15,6 +15,8 @@ from collections import Counter
 from utils.data_loading.load_data import get_tile_data
 from PIL import Image, ImageOps
 
+import cv2
+
 # load the multilabel binarizer
 with open("../model/model_tokenizer.pickle", "rb") as handle:
     mlb = pickle.load(handle)
@@ -60,6 +62,9 @@ def level_image_unroll(level_array_padded):
     for x in range(0, image_w - 32, 16):
         for y in range(0, image_h - 32, 16):
             context_tile = level_array_padded[y : y + 48, x : x + 48, :]
+            cv2.imshow("test", context_tile)
+            cv2.waitKey()
+            cv2.destroyAllWindows()
             level_image_unrolled.append(context_tile)
     return np.array(level_image_unrolled)
 
@@ -104,6 +109,8 @@ def generate_unified_rep(current_game,loaded_game_data,game_image_dir, save_dir)
         level_image_expanded = level_image_unroll(level_array_padded)
         print("Expanded level images ", level_image_expanded.shape)
 
+        
+
         mapped_text = np.zeros((level_image_expanded.shape[0], 13))
         encoded_level = encoding_model.predict([level_image_expanded, mapped_text])
         print("Encoding dimension", encoded_level.shape)
@@ -117,18 +124,18 @@ def generate_unified_rep(current_game,loaded_game_data,game_image_dir, save_dir)
             idx2tile_map[ptr] = tile_sprite
             ptr += 1
 
-        with open(save_dir + level_id + ".pickle", "wb") as handle:
-            pickle.dump(encoded_level, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        print("Saved ", level_id, " successfully!")
+    #     with open(save_dir + level_id + ".pickle", "wb") as handle:
+    #         pickle.dump(encoded_level, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    #     print("Saved ", level_id, " successfully!")
 
-    with open(save_dir + "mappings/idx2embed.pickle", "wb") as handle:
-        pickle.dump(idx2embed_map, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    print("Index to Embedding map saved successfully!")
+    # with open(save_dir + "mappings/idx2embed.pickle", "wb") as handle:
+    #     pickle.dump(idx2embed_map, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    # print("Index to Embedding map saved successfully!")
 
-    with open(save_dir + "mappings/idx2tile.pickle", "wb") as handle:
-        pickle.dump(idx2tile_map, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    print("Index to Tile map saved successfully!")
-    print("Extracted unified representation for game ",current_game)
+    # with open(save_dir + "mappings/idx2tile.pickle", "wb") as handle:
+    #     pickle.dump(idx2tile_map, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    # print("Index to Tile map saved successfully!")
+    # print("Extracted unified representation for game ",current_game)
 
     
 if __name__ == "__main__": 

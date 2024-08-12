@@ -4,9 +4,9 @@ import pandas as pd
 import cv2
 import json
 
-DEBUG = False
+DEBUG = True
 
-def ResizeLevel(levelImage, tileSize, kernelSize, heightOffset=0, widthOffset=0):
+def ResizeLevel(levelImage, tileSize, kernelSize, heightOffset=0, widthOffset=0, resizeMultiplier=1, columnWise=False):
 
     if levelImage.ndim > 3 or levelImage.ndim < 2:
         print(f"Level Image has ({levelImage.ndim}) dimensions which is not valid. Valid dimensions: 2 (text files) or 3 (images)")
@@ -15,18 +15,21 @@ def ResizeLevel(levelImage, tileSize, kernelSize, heightOffset=0, widthOffset=0)
     height, width = levelImage.shape[:2]
 
     if DEBUG:
-        print(height, " ", width)
-        print(height % 16, " ", width % 16)
+        print(f"Image Height: {height} | Image Width: {width}")
+        print(f"Image Height % 16: {height % 16} | Image Width % 16: {width % 16}")
 
     startPosition = kernelSize % 2
 
     boxHeight = tileSize * kernelSize
     boxWidth = tileSize * kernelSize
+
+    if DEBUG:
+        print(f"BoxHeigh: {boxHeight} | BoxWidth: {boxWidth}")
     
     originPoint = [heightOffset, widthOffset]
 
     if DEBUG:
-        print(startPosition)
+        print(f"Start Position: {startPosition}")
 
     padding = ((kernelSize // 2) * 2) if kernelSize > 1 else 0
     
@@ -34,11 +37,11 @@ def ResizeLevel(levelImage, tileSize, kernelSize, heightOffset=0, widthOffset=0)
     heightWithKernel = (height // tileSize) - padding
 
     if DEBUG:
-        print(kernelSize)
-        print(kernelSize % 2)
-        print(((kernelSize % 2) * 2))
+        print(f"Kernel Size: {kernelSize}")
+        print(f"Kernel Size % 2: {kernelSize % 2}")
+        print(f"Kernel Size % 2 * 2: {((kernelSize % 2) * 2)}")
 
-        print(heightWithKernel, " ", widthWithKernel)
+        print(f"Height With Kernel: {heightWithKernel} | Width With Kernel: {widthWithKernel}")
 
     tileGroupImages = []
 
@@ -47,12 +50,8 @@ def ResizeLevel(levelImage, tileSize, kernelSize, heightOffset=0, widthOffset=0)
             
             if levelImage.ndim == 2:
                 cropped = levelImage[originPoint[0]:originPoint[0]+boxHeight, originPoint[1]:originPoint[1]+boxWidth]
-
-                if DEBUG:
-                    print("origin1: ", originPoint[0], " origin2: ", originPoint[1])
-                    print(cropped)
             else:
-                cropped = cv2.resize(levelImage[originPoint[0]:originPoint[0]+boxHeight, originPoint[1]:originPoint[1]+boxWidth, :], (boxHeight*2, boxWidth*2), interpolation=cv2.INTER_NEAREST)
+                cropped = cv2.resize(levelImage[originPoint[0]:originPoint[0]+boxHeight, originPoint[1]:originPoint[1]+boxWidth, :], (boxHeight*resizeMultiplier, boxWidth*resizeMultiplier), interpolation=cv2.INTER_NEAREST)
 
             tileGroupImages.append(cropped)
 
@@ -69,7 +68,17 @@ def ResizeLevel(levelImage, tileSize, kernelSize, heightOffset=0, widthOffset=0)
     # for i, tile in enumerate(tileGroupImages):
     #     cv2.imwrite(f"testdata/{i}-{j}.png", tile)
 
-    return np.array(tileGroupImages)
+    tileGroupImages = np.array(tileGroupImages)
+
+    if columnWise:
+        if tileGroupImages.ndim == 3:
+            tileGroupImages = np.reshape(tileGroupImages, (heightWithKernel, widthWithKernel, boxHeight*resizeMultiplier, boxWidth*resizeMultiplier))
+            tileGroupImages = np.transpose(tileGroupImages, (1, 0, 2, 3)).reshape((heightWithKernel*widthWithKernel, boxHeight*resizeMultiplier, boxWidth*resizeMultiplier))
+        else:
+            tileGroupImages = np.reshape(tileGroupImages, (heightWithKernel, widthWithKernel, boxHeight*resizeMultiplier, boxWidth*resizeMultiplier, 3))
+            tileGroupImages = np.transpose(tileGroupImages, (1, 0, 2, 3, 4)).reshape((heightWithKernel*widthWithKernel, boxHeight*resizeMultiplier, boxWidth*resizeMultiplier, 3))
+
+    return tileGroupImages
 
 def LoadLevelTextFile(filePath):
     
