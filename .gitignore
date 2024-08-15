@@ -10,3 +10,5 @@ outputs/*
 srcTom/testrep/*
 
 *.pyc
+
+__pycache__

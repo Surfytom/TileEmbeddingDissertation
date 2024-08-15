@@ -13,6 +13,8 @@ from keras.models import Model
 from keras import backend as K
 from collections import Counter
 
+import pickle5 as pickle
+
 from utils.evaluation_metrics.multilabel.example_based import (
     hamming_loss,
     example_based_accuracy,

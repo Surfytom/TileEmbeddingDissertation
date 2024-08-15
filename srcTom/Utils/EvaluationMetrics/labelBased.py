@@ -10,9 +10,8 @@ def accuracy_macro(y_true,y_pred):
     numerator=np.sum(np.logical_and(y_true,y_pred),axis=0)
     denominator=np.sum(np.logical_or(y_true,y_pred),axis=0)
     
-    
-    p_n=np.array(numerator).astype(np.float)
-    p_d=np.array(denominator).astype(np.float)
+    p_n=np.array(numerator).astype(np.float32)
+    p_d=np.array(denominator).astype(np.float32)
     
     sum_acc=np.nansum(p_n/p_d)
     avg_accuracy=sum_acc/n
@@ -26,8 +25,8 @@ def precision_macro(y_true,y_pred):
     precision_num=np.sum(np.logical_and(y_true,y_pred),axis=0)
     precision_den=np.sum(y_pred,axis=0)
 
-    p_n=np.array(precision_num).astype(np.float)
-    p_d=np.array(precision_den).astype(np.float)
+    p_n=np.array(precision_num).astype(np.float32)
+    p_d=np.array(precision_den).astype(np.float32)
 
     sum_precision=np.nansum(p_n/p_d)
     avg_precision=sum_precision/n
@@ -41,8 +40,8 @@ def recall_macro(y_true,y_pred):
     precision_num=np.sum(np.logical_and(y_true,y_pred),axis=0)
     precision_den=np.sum(y_true,axis=0)
 
-    p_n=np.array(precision_num).astype(np.float)
-    p_d=np.array(precision_den).astype(np.float)
+    p_n=np.array(precision_num).astype(np.float32)
+    p_d=np.array(precision_den).astype(np.float32)
 
     sum_recall=np.nansum(p_n/p_d)
     avg_recall=sum_recall/n
@@ -56,8 +55,8 @@ def accuracy_micro(y_true,y_pred):
     numerator=np.sum(np.logical_and(y_true,y_pred))
     denominator=np.sum(np.logical_or(y_true,y_pred))
     
-    p_n=np.array(numerator).astype(np.float)
-    p_d=np.array(denominator).astype(np.float)
+    p_n=np.array(numerator).astype(np.float32)
+    p_d=np.array(denominator).astype(np.float32)
     
     micro_acc=(p_n/p_d)
     
@@ -68,8 +67,8 @@ def precision_micro(y_true,y_pred):
     precision_num=np.sum(np.logical_and(y_true,y_pred))
     precision_den=np.sum(y_pred)
 
-    p_n=np.array(precision_num).astype(np.float)
-    p_d=np.array(precision_den).astype(np.float)
+    p_n=np.array(precision_num).astype(np.float32)
+    p_d=np.array(precision_den).astype(np.float32)
 
     micro_precision=(p_n/p_d)
     
@@ -80,8 +79,8 @@ def recall_micro(y_true,y_pred):
     precision_num=np.sum(np.logical_and(y_true,y_pred))
     precision_den=np.sum(y_true)
 
-    p_n=np.array(precision_num).astype(np.float)
-    p_d=np.array(precision_den).astype(np.float)
+    p_n=np.array(precision_num).astype(np.float32)
+    p_d=np.array(precision_den).astype(np.float32)
 
     micro_recall=(p_n/p_d)
     
