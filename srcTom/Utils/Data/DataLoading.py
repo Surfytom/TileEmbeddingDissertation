@@ -17,7 +17,7 @@ spritePaths = {
     "thelegendofzelda": "../data/tomData/sprites/thelegendofzelda",
 }
 
-def TextTileToImage(tileArray, tileSize, spritePath, savePath=None):
+def TextTileToImage(tileArray, tileSize, spritePath, savePath=None, fileNameOverride=None, cvtColor=True):
 
     outputImage = np.empty((tileSize*tileArray.shape[0], tileSize*tileArray.shape[1], 3), dtype=np.uint8)
 
@@ -29,11 +29,11 @@ def TextTileToImage(tileArray, tileSize, spritePath, savePath=None):
             tile = '@' if tile == '.' else tile
             fileName += tile
 
-            tileImage = cv2.cvtColor(cv2.imread(f"{spritePath}/{tile}.png"), cv2.COLOR_BGR2RGB)
+            tileImage = cv2.cvtColor(cv2.imread(f"{spritePath}/{tile}.png"), cv2.COLOR_BGR2RGB) if cvtColor else cv2.imread(f"{spritePath}/{tile}.png")
             outputImage[i*tileSize:(i+1)*tileSize, j*tileSize:(j+1)*tileSize] = tileImage
 
     if savePath:
-        cv2.imwrite(f"{savePath}/{fileName}.png", outputImage)
+        cv2.imwrite(f"{savePath}/{fileNameOverride if fileNameOverride else fileName}.png", outputImage)
 
     return outputImage
 
@@ -59,6 +59,12 @@ def TFIDFWeightVector(data, uniqueClasses):
 
 def LoadTrainTestData(pathToDataCsv, testSetSize=0.1, shuffle=False, randomState=1):
 
+    '''
+    **Returns** 
+
+    dict: {"trainData": trainingData, "testData", testData, "weightArray": tfidf-weightArray}
+    '''
+
     dataFrame = pd.read_csv(pathToDataCsv)
 
     dataFrame['affordances'] = dataFrame['affordances'].apply(lambda x: literal_eval(str(x)))
@@ -71,6 +77,11 @@ def LoadTrainTestData(pathToDataCsv, testSetSize=0.1, shuffle=False, randomState
     trainData, testData = train_test_split(dataFrame, test_size=testSetSize, random_state=randomState, shuffle=shuffle)
 
     affordanceDict, tfidfWeightArray = TFIDFWeightVector(trainData, uniqueAffordances)
+    
+    # Save affordance dictionary for inference
+    # import pickle
+    # with open("AffordanceTrainDataDictionary.pickle", "wb") as f:
+    #     pickle.dump(affordanceDict, f)
 
     trainData["encodedAffordances"] = [np.sum(np.array([np.where(np.array(list(affordanceDict.keys())) == affordance, 1, 0) for affordance in row['affordances']]), axis=0) for index, row in trainData.iterrows()]
     testData["encodedAffordances"] = [np.sum(np.array([np.where(np.array(list(affordanceDict.keys())) == affordance, 1, 0) for affordance in row['affordances']]), axis=0) for index, row in testData.iterrows()]

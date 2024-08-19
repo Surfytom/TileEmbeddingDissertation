@@ -100,12 +100,11 @@ def GetAffordances(tileArray, affordanceDictionary, centerTileOnly=True):
         return affordanceDictionary[tileArray[centerX, centerY]]
     
     outputAffordancs = []
-
+    
     for i, row in enumerate(tileArray):
         outputAffordancs.append([])
         for j, tile in enumerate(row):
             outputAffordancs[i].append(affordanceDictionary[tile])
-
 
     return outputAffordancs
 

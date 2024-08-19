@@ -8,6 +8,8 @@ src/test.csv
 outputs/*
 
 srcTom/testrep/*
+srcTom/lrLSTMData
+
 
 *.pyc
 
