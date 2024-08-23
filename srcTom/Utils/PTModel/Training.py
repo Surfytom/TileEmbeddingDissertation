@@ -8,10 +8,10 @@ import Utils.PTModel.Losses as Losses
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-def TrainModel(dataObj, epochs, batchSize):
+def TrainModel(dataObj, epochs, batchSize, modelClassToTrain=Models.TileEmbeddingVAE):
     # dataObj = {"trainData": trainingdata, "testData": testData, "weightArray": tfidfWeightArray}
 
-    model = Models.TileEmbeddingVAE()
+    model = modelClassToTrain()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
     imageCritierion = nn.MSELoss()

@@ -8,16 +8,18 @@ import os
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 @torch.no_grad()
-def SaveUnifiedRepresentation(model, data, savePath):
+def SaveUnifiedRepresentation(model, data, modelName):
+
+    if os.path.isdir(f"Models/{modelName}/UnifiedRep"):
+        raise RuntimeError(f"Folder Models/{modelName}/UnifiedRep already exists. Delete the folder and retry.")
+    
+    os.mkdir(f"Models/{modelName}/UnifiedRep")
+
+    if model == None:
+        model = torch.load(f"Models/{modelName}/{modelName}")
+
     model.to(device)
     model.eval()
-
-    if not os.path.isdir(savePath):
-        print("Does not exists")
-        os.mkdir(savePath)
-    else:
-        print("Does exist")
-        raise RuntimeError("Save Path Already Exists. Delete folder to retry...")
 
     for gamename in data["gamename"].unique():
         gameData = data[data["gamename"] == gamename]
@@ -27,28 +29,37 @@ def SaveUnifiedRepresentation(model, data, savePath):
 
         embeddingArray = model.encode(imageArray, affordanceArray).detach().cpu().numpy()
 
-        os.mkdir(f"{savePath}/{gamename}")
-        np.save(f"{savePath}/{gamename}/unifiedRep.npy", embeddingArray)
+        os.mkdir(f"Models/{modelName}/UnifiedRep/{gamename}")
+        np.save(f"Models/{modelName}/UnifiedRep/{gamename}/unifiedRep.npy", embeddingArray)
 
 @torch.no_grad()
-def SaveLevelUnifiedRepresentation(model, data, savePath):
+def SaveLevelUnifiedRepresentation(model, levelData, modelName, gameName, affordanceData=None):
+
+    if os.path.isdir(f"Models/{modelName}/LevelUnifiedRep/{gameName}"):
+        raise RuntimeError(f"Folder Models/{modelName}/LevelUnifiedRep/{gameName} already exists. Delete the folder and retry.")
+    
+    if not os.path.isdir(f"Models/{modelName}/LevelUnifiedRep"):
+        os.mkdir(f"Models/{modelName}/LevelUnifiedRep")
+
+    os.mkdir(f"Models/{modelName}/LevelUnifiedRep/{gameName}")
+
+    if model == None:
+        model = torch.load(f"Models/{modelName}/{modelName}.pt")
+
     model.to(device)
     model.eval()
-
-    if not os.path.isdir(savePath):
-        os.mkdir(savePath)
-    else:
-        raise RuntimeError("Save Path Already Exists. Delete folder to retry...")
     
-    os.mkdir(f"{savePath}/BubbleBobble")
-
     tiles = []
     embeddings = []
 
-    for i, level in enumerate(data):
+    for i, level in enumerate(levelData):
 
         imageArray = np.array(level)
-        affordanceArray = np.zeros(shape=(imageArray.shape[0], 13))
+        
+        if type(affordanceData) == np.ndarray:
+            affordanceArray = affordanceData[i]
+        else:
+            affordanceArray = np.zeros(shape=(imageArray.shape[0], 13))
 
         # Adjust 48 x 48 resize to be dynamic for 5 x 5 or larger kernels
         imageArrayTensor = torch.tensor(np.reshape(imageArray, (-1, 3, 48, 48)), dtype=torch.float32).to(device)
@@ -58,16 +69,19 @@ def SaveLevelUnifiedRepresentation(model, data, savePath):
 
         centerTiles = imageArray[:, 16:32, 16:32, :]
 
-        np.save(f"{savePath}/BubbleBobble/level{i}Embedding.npy", embeddingArray)
+        np.save(f"Models/{modelName}/LevelUnifiedRep/{gameName}/level{i}Embedding.npy", embeddingArray)
 
         tiles.extend(centerTiles)
         embeddings.extend(embeddingArray)
 
-    np.save(f"{savePath}/BubbleBobble/centerTiles.npy", np.array(tiles))
-    np.save(f"{savePath}/BubbleBobble/embeddings.npy", np.array(embeddings))
+    np.save(f"Models/{modelName}/LevelUnifiedRep/{gameName}/centerTiles.npy", np.array(tiles))
+    np.save(f"Models/{modelName}/LevelUnifiedRep/{gameName}/embeddings.npy", np.array(embeddings))
 
 @torch.no_grad()
-def ModelInference(model, data):
+def ModelInference(model, data, modelName=""):
+
+    if model == None and modelName != "":
+        model = torch.load(f"Models/{modelName}.pt")
 
     model.to(device)
     model.eval()

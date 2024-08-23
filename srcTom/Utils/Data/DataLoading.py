@@ -49,11 +49,11 @@ def TFIDFWeightVector(data, uniqueClasses):
 
     # Average each weight and scale by 1000
     # weightFreq = {k: v / sum(newDict.values()) for k, v in newDict.items()}
-    # weightVector = [v * 1000 for v in newDict.values()] Forked github code dont know why * 1000??
-    weightVector = [v for v in newDict.values()]
+    weightVector = [v * 1000 for v in newDict.values()] # Forked github code dont know why * 1000??
+    #weightVector = [v for v in newDict.values()]
 
     tensorFromList = torch.tensor(weightVector, dtype=torch.float32)
-    print(f"TFIDF Weight Array: {tensorFromList}")
+    #print(f"TFIDF Weight Array: {tensorFromList}")
 
     return newDict, tensorFromList
 
@@ -101,7 +101,7 @@ def LoadCrossValTrainTestData(pathToDataCsv, shuffle=False, randomState=1):
 
     uniqueAffordances = set([affordance for affordanceList in dataFrame['affordances'] for affordance in affordanceList])
 
-    print(f"Unique Affordance Array: {uniqueAffordances}")
+    #print(f"Unique Affordance Array: {uniqueAffordances}")
 
     if shuffle:
         dataFrame = dataFrame.sample(frac=1, random_state=randomState).reset_index()

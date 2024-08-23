@@ -63,9 +63,151 @@ class TileEmbeddingVAE(nn.Module):
             print("EncodedImage shape: ", encodedImage.shape)
             print("encodedText shape: ", encodedText.shape)
 
-        concatenateEmbeddding = torch.cat((encodedImage, encodedText), 1)
+        concatenateEmbedding = torch.cat((encodedImage, encodedText), 1)
 
-        embedding = self.embeddingLayer(concatenateEmbeddding)
+        embedding = self.embeddingLayer(concatenateEmbedding)
+        embedding = nn.functional.tanh(embedding)
+
+        return embedding
+
+    def decode(self, embedding):
+        decodedImage = self.imageDecoder(embedding)
+        decodedText = self.textDecoder(embedding)
+        return decodedImage, decodedText
+
+    def forward(self, xImages, xText):
+        # Encoder
+        encodedEmbedding = self.encode(xImages, xText)
+
+        # Decoder
+        yPredImage, yPredText = self.decode(encodedEmbedding)
+        
+        return yPredImage, yPredText
+    
+class TileEmbeddingVAEwMHA(nn.Module):
+
+    def __init__(self, debug=False):
+        super().__init__()
+
+        self.debug = debug
+
+        self.imgEncConv1 = nn.Conv2d(3, 32, kernel_size=3, stride=3)
+        self.imgEncConv2 = nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1)
+        self.imgEncConv3 = nn.Conv2d(32, 16, kernel_size=3, stride=1, padding=1)
+
+        self.imgEncBn1 = nn.BatchNorm2d(32)
+        self.imgEncBn2 = nn.BatchNorm2d(32)
+        self.imgEncBn3 = nn.BatchNorm2d(16)
+
+        self.imgEncMha = nn.MultiheadAttention(32, 1, batch_first=True)
+        self.imgEncScaler = nn.Parameter(torch.zeros(1))
+
+        self.imageEncoder = nn.Sequential(
+            nn.Conv2d(3, 32, kernel_size=3, stride=3),
+            nn.BatchNorm2d(32),
+            nn.Tanh(),
+            nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(32),
+            nn.Tanh(),
+            nn.Conv2d(32, 16, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(16),
+            nn.Tanh(),
+            nn.Flatten(),
+        )
+
+        self.textEncoder = nn.Sequential(
+            nn.Linear(13, 32),
+            nn.Tanh(),
+            nn.Linear(32, 16),
+            nn.Tanh(),
+        )
+
+        self.embeddingLayer = nn.Linear(4112, 256)
+
+        self.imageDecoder = nn.Sequential(
+            nn.Linear(256, 4096),
+            nn.Unflatten(1, (16, 16, 16)),
+            nn.ConvTranspose2d(16, 32, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(32),
+            nn.Tanh(),
+            nn.ConvTranspose2d(32, 32, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(32),
+            nn.Tanh(),
+            nn.ConvTranspose2d(32, 3, kernel_size=3, stride=1, padding=1),
+        )
+
+        self.textDecoder = nn.Sequential(
+            nn.Linear(256, 16),
+            nn.Tanh(),
+            nn.Linear(16, 32),
+            nn.Tanh(),
+            nn.Linear(32, 13),
+            nn.Sigmoid(),
+        )
+
+    def useAttention(self, x):
+
+        bs, c, h, w = x.shape
+        x = x.reshape(bs, c, h * w).transpose(1, 2)
+
+        attOut, attMap = self.imgEncMha(x, x, x)
+
+        if self.debug:
+            print(f"attOut shape: {attOut.size()}")
+            print(f"attMap shape: {attMap.size()}")
+
+        attOut = attOut.transpose(1, 2).reshape(bs, c, h, w)
+
+        if self.debug:
+            print(f"attOut reshaped shape: {attOut.size()}")
+
+        return attOut, attMap
+
+    def encodeImage(self, xImages):
+
+        xImages = self.imgEncConv1(xImages)
+        xImages = self.imgEncBn1(xImages)
+        
+        xImages = self.imgEncScaler * self.useAttention(xImages)[0] + xImages
+
+        xImages = nn.functional.tanh(xImages)
+
+        xImages = self.imgEncConv2(xImages)
+        xImages = self.imgEncBn2(xImages)
+        xImages = nn.functional.tanh(xImages)
+
+        xImages = self.imgEncConv3(xImages)
+        xImages = self.imgEncBn3(xImages)
+        xImages = nn.functional.tanh(xImages)
+
+        if self.debug:
+            print(f"xImages b4 flatten shape: {xImages.size()}")
+
+        xImages = xImages.flatten(start_dim=1)
+
+        if self.debug:
+            print(f"xImages flattened shape: {xImages.size()}")
+
+        return xImages
+
+    def encode(self, xImages, xText):
+
+        if self.debug:
+            print(f"xImages shape: {xImages.shape}")
+            print(f"xText shape: {xText.shape}")
+
+        encodedImage = self.encodeImage(xImages)
+
+        encodedText = self.textEncoder(xText)
+
+        if self.debug:
+            print(f"EncodedImage shape: {encodedImage.size()}")
+            print(f"encodedText shape: {encodedText.size()}")
+
+        concatenateEmbedding = torch.cat((encodedImage, encodedText), 1)
+
+        embedding = self.embeddingLayer(concatenateEmbedding)
+        embedding = nn.functional.tanh(embedding)
 
         return embedding
 

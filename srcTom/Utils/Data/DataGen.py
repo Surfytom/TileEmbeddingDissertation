@@ -4,7 +4,7 @@ import pandas as pd
 import cv2
 import json
 
-DEBUG = True
+DEBUG = False
 
 def ResizeLevel(levelImage, tileSize, kernelSize, heightOffset=0, widthOffset=0, resizeMultiplier=1, columnWise=False):
 

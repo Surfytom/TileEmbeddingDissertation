@@ -10,6 +10,11 @@ outputs/*
 srcTom/testrep/*
 srcTom/lrLSTMData
 
+data/unified_rep/bubble_bobble_2
+srcTom/MHArep
+srcTom/SecondTry
+srcTom/SecondTryTanH
+srcTom/Models
 
 *.pyc
 
