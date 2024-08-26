@@ -1,53 +1,46 @@
-# Tile Embedding: A General Representation for Level Generation
-### Authors: Mrunal Jadhav and Matthew Guzdial 
+# Title: WIP
 
-In  recent  years,  Procedural  Level  Generation  via  Machine Learning (PLGML) techniques have been applied to generate game levels with machine learning. These approaches rely on human-annotated representations of game levels. Creating annotated datasets for games requires domain knowledge and is time-consuming. Hence, though a large number of video games exist, annotated datasets are curated only for a small handful. Thus current PLGML techniques have been explored in limited domains, with Super Mario Bros. as the most common example. To address this problem, we present tile embeddings,  a  unified,  affordance-rich  representation  for  tile-based  2D  games.  To  learn  this  embedding,  we  employ  autoencoders trained on the visual and semantic information oft iles from a set of existing, human-annotated games. We evaluate this representation on its ability to predict affordancesfor unseen tiles, and to serve as a PLGML representation for annotated and unannotated games.
+This repo is a forked version of the [tile embedding repository](https://github.com/js-mrunal/tile_embeddings) which is created by one of the authors (Mrunal Jadhav) of the paper it partly implements [tile embedding paper](https://ojs.aaai.org/index.php/AIIDE/article/view/18888).
 
-## Our contributions through this repository
-To promote future research and as a contribution to PCGML community, through this repository we provide:
-1. An end to end implementation for extracting the data and training an autoencoder to get a single, unified representation which we refer as **tile embeddings**.
-2. A tutorial notebook for generating levels of the game Bubble Bobble using LSTMs and tile embeddings.
-3. JSON files with context data for every unique tile type.
-4. Preprocessed level images for the game Bubble Bobble. 
+This repository re-implements the aforementioned tile embedding paper in it's entirety using the authors repository linked above as a sanity checker. This repository also proposes adding attention into the orginal author's autoencoder architecture to **potentially improve** performance.
 
-<!-- Paper: 
-Please cite : -->
+This repository utilises the PyTorch library to implement the models shown in the paper (the original repo used Keras).
 
-## Quick Rundown
-1. [Data Extraction and Preparation](#1-data-extraction-and-preparation)
-2. [Autoencoder Training](#2-autoencoder-for-tile-embeddings)
-3. [Level Representation using tile embeddings](#3-unified-level-representation-with-tile-embeddings)
-4. [Bubble Bobble level generation using LSTM](#4-generating-level-representation-for-bubble-bobble)
-5. [How can you contribute to this project](#how-can-you-contribute-to-this-project?)
+## Contents
+1. [wip]()
 
+## Setup Repository
 
-## How do I use this repository?
+This section will show you how to setup the repository and configure your enviroment to be able to run the notebooks in the repository.
 
-Too many scripts to run? The flow chart below answers the questions related to which scripts to run and in what order :) 
-
-<img src="images/roadmap.png">
-
-## 0 Clone the Github Repository 
+### 1 | Clone the Github Repository
+Run this command in your preferred terminal to download the repository:
 
 ```
-git clone https://github.com/js-mrunal/tile_embeddings.git
+git clone https://github.com/Surfytom/TileEmbeddingDissertation.git
 ```
 
-## 1 Installing Virtual Environment
+### 2 | Setting Up the Enviroment
 
-1. Install Pipenv
-```
-pip3 install pipenv
-```
-2. Setup the virtual environment 
-```
-make init
-```
-3. Try and run jupyter notebook on your local server
-```
-make jupyter-notebook
-=======
+#### Option 1 - Conda
 
+This option requires miniconda or anaconda to be installed already.
+
+There is a enviroment.yaml file in the repository. Navigate your terminal to the base path of the repository then run the following command:
+
+```
+conda env create -f environment.yaml
+```
+This conda enviroment can then be used in the notebooks by selecting the enviroment in the top right of a notebook with the option **"Select Kernel"**
+
+#### Option 2 - Pip
+
+There is a requirments.txt file in the base folder of the repository that can be used to install the repositories packages using pip. First navigate to the base folder of the repository then run this command:
+
+**Warning**: This will install the packages to whichever enviroment you are currently in. If no enviroment is activated it will install into your base python version which is not advised. For easy to use virtual Python enviroments install miniconda and use option 1 instead.
+
+```
+pip install -r requirements.txt
 ```
 
 ## 1 Data Extraction and Preparation
