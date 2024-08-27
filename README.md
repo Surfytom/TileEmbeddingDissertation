@@ -7,7 +7,8 @@ This repository re-implements the aforementioned tile embedding paper in it's en
 This repository utilises the PyTorch library to implement the models shown in the paper (the original repo used Keras).
 
 ## Contents
-1. [wip]()
+1. [Setup Repository and Enviroment](#setup-repository)
+2. [How To Use the Repository]()
 
 ## Setup Repository
 
@@ -29,7 +30,7 @@ This option requires miniconda or anaconda to be installed already.
 There is a enviroment.yaml file in the repository. Navigate your terminal to the base path of the repository then run the following command:
 
 ```
-conda env create -f environment.yaml
+conda env create -f environment.yml
 ```
 This conda enviroment can then be used in the notebooks by selecting the enviroment in the top right of a notebook with the option **"Select Kernel"**
 
@@ -37,11 +38,14 @@ This conda enviroment can then be used in the notebooks by selecting the envirom
 
 There is a requirments.txt file in the base folder of the repository that can be used to install the repositories packages using pip. First navigate to the base folder of the repository then run this command:
 
-**Warning**: This will install the packages to whichever enviroment you are currently in. If no enviroment is activated it will install into your base python version which is not advised. For easy to use virtual Python enviroments install miniconda and use option 1 instead.
-
 ```
 pip install -r requirements.txt
 ```
+This pip enviroment can then be used in the notebooks by selecting the enviroment in the top right of a notebook with the option **"Select Kernel"**
+
+## How To Use the Repository
+
+
 
 ## 1 Data Extraction and Preparation
 **Prerequisites:**

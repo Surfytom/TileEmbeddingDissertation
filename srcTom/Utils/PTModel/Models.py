@@ -225,6 +225,88 @@ class TileEmbeddingVAEwMHA(nn.Module):
         
         return yPredImage, yPredText
     
+class LSTMModel(nn.Module):
+
+    def __init__(self, debug=False):
+        super().__init__()
+
+        self.histLSTM = nn.LSTM(256, 128, batch_first=True)
+        self.colLSTM = nn.LSTM(256, 128, batch_first=True)
+
+        self.textLSTM = nn.LSTM(256, 128, batch_first=True)
+
+        self.outputLayer = nn.Linear(128, 256)
+
+    def forward(self, xHist, xText, xCol):
+        
+        histOut, (histH, histC) = self.histLSTM(xHist)
+
+        #print(f"hist out shape b4: {histOut.size()}")
+        #histOut = histOut[-1, :, :]
+        #print(f"hist out shape b4: {histOut.size()}")
+
+        colOut, (colH, colC) = self.colLSTM(xCol)
+
+        #colOut = colOut[:, -1]
+
+        hiddenAdd = torch.add(histH, histC)
+        channelAdd = torch.add(colH, colC)
+
+        #textOut, (textH, textC) = self.textLSTM(xText, (hiddenAdd, channelAdd)) if self.training else self.infTextLSTM(xText, (hiddenAdd, channelAdd))
+        textOut, (textH, textC) = self.textLSTM(xText, (hiddenAdd, channelAdd))
+
+        # print(f"text out size b4: {textOut.size()}")
+        # if textOut.ndim == 2:
+        #     textOut = textOut[-1, :]
+        # else:
+        #     textOut = textOut[:, -1, :]
+        # print(f"text out size after: {textOut.size()}")
+
+        output = nn.functional.tanh(self.outputLayer(textOut))
+        
+        return output
+    
+class VGLCLSTMModel(nn.Module):
+
+    def __init__(self, debug=False):
+        super().__init__()
+
+        self.histLSTM = nn.LSTM(1, 128, batch_first=True)
+        self.colLSTM = nn.LSTM(256, 128, batch_first=True)
+
+        self.textLSTM = nn.LSTM(1, 128, batch_first=True)
+
+        self.outputLayer = nn.Linear(128, 9)
+
+    def forward(self, xHist, xText, xCol):
+        
+        histOut, (histH, histC) = self.histLSTM(xHist)
+
+        #print(f"hist out shape b4: {histOut.size()}")
+        #histOut = histOut[-1, :, :]
+        #print(f"hist out shape b4: {histOut.size()}")
+
+        colOut, (colH, colC) = self.colLSTM(xCol)
+
+        #colOut = colOut[:, -1]
+
+        hiddenAdd = torch.add(histH, histC)
+        channelAdd = torch.add(colH, colC)
+        
+        textOut, (textH, textC) = self.textLSTM(xText, (hiddenAdd, channelAdd))
+
+        # print(f"text out size b4: {textOut.size()}")
+        # if textOut.ndim == 2:
+        #     textOut = textOut[-1, :]
+        # else:
+        #     textOut = textOut[:, -1, :]
+        # print(f"text out size after: {textOut.size()}")
+
+        output = nn.functional.softmax(self.outputLayer(textOut), dim=1)
+        # print(f"Output Size SoftMax: {output.size()}")
+        
+        return output
+
 class TestModel(nn.Module):
 
     def __init__(self):
