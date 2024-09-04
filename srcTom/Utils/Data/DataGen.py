@@ -80,7 +80,7 @@ def ResizeLevel(levelImage, tileSize, kernelSize, heightOffset=0, widthOffset=0,
 
     return tileGroupImages
 
-def LoadLevelTextFile(filePath):
+def LoadLevelTextFile(filePath, padSize=0):
     
     tileArray = []
 
@@ -89,6 +89,9 @@ def LoadLevelTextFile(filePath):
             tileArray.append(list(line.rstrip("\n")))
     
     tileArray = np.array(tileArray)
+
+    if padSize > 0:
+        tileArray = np.pad(tileArray, padSize, constant_values='')
 
     return tileArray
 
@@ -108,7 +111,7 @@ def GetAffordances(tileArray, affordanceDictionary, centerTileOnly=True):
 
     return outputAffordancs
 
-def GenerateData(LevelPathSpriteDict, savePath="test.csv", kernelSize=3, centerTileOnly=True):
+def GenerateData(LevelPathSpriteDict, savePath="test.csv", kernelSize=3, centerTileOnly=True, padSize=0):
 
     totalUniqueCombos = 0
     dataFramesArray = []
@@ -129,7 +132,7 @@ def GenerateData(LevelPathSpriteDict, savePath="test.csv", kernelSize=3, centerT
             if DEBUG:
                 print(textLevel)
 
-            t = LoadLevelTextFile(textLevel)
+            t = LoadLevelTextFile(textLevel, padSize=padSize)
 
             if DEBUG:
                 print("Loaded Level Shape: ", t.shape)

@@ -16,6 +16,8 @@ def extract_context1(current_level,current_img_padded,save_dir,tile_dictionary):
     imax=len(current_level)
     jmax=len(current_level[0][0])
 
+    # print(f"image shape: {np.array(current_img_padded).shape}")
+
     #outer loop for the row
     for x in range(imax):
         #for traversing through the text file columns
@@ -25,6 +27,7 @@ def extract_context1(current_level,current_img_padded,save_dir,tile_dictionary):
         for y in range(jmax):
             #candidate tile character
             current_symbol=current_level[x][0][y]
+            # print(f"current symbol: {current_symbol}")
             #extracting neighbourhood context of candidate tile 
             north=' '
             south=' '
@@ -66,6 +69,7 @@ def extract_context1(current_level,current_img_padded,save_dir,tile_dictionary):
             #extract the image 
             tile_context=img_to_array(current_img_padded)[img_x:img_x+48,img_y:img_y+48,:]
             tile_sprite=array_to_img(tile_context)
+            # print(f"tile sprite shape: img_x {img_x} img_y {img_y} | {img_to_array(tile_sprite).shape}")
 #             if not tile_context.shape[2]==3:
 #                 tile_sprite=tile_sprite.convert('RGB')
             assert img_to_array(tile_sprite).shape == (48,48,3)

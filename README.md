@@ -45,14 +45,10 @@ This pip enviroment can then be used in the notebooks by selecting the enviromen
 
 ## How To Use the Repository
 
-This repository can run different tasks that require certain notebooks to be run to generate data before they can function properly. Select the function you want to do out of the selection below and follow to steps in the section:
+This repository can run different tasks that require certain notebooks to be run to generate data before they can function properly. Select the function you want to perform out of the selection below then click on it and follow the steps that appear:
 
-- [Train Autoencoder (Optional TSNE Visual)](#train-autoencoder)
-- [Evaluate Autoencoder Architecture with Cross Validation](#evaluate-autoencoder-architecture-with-cross-validation)
-- [Train LSTM on Bubble Bobble Embeddings](#train-lstm-on-bubble-bobble-embeddings)
-- [Generate Bubble Bobble Levels with LSTM](#generate-bubble-bobble-levels-with-lstm)
-- [Train LSTM on Lode Runner Embeddings or Raw VGLC Data](#train-lstm-on-lode-runner-embeddings-or-raw-vglc-data)
-- [Generate Lode Runner Levels with LSTM (Trained on Embeddings or Raw VGLC Data)](#generate-lode-runner-levels-with-lstm)
+<details>
+<summary>Train Autoencoder</summary>
 
 ## Train Autoencoder
 
@@ -72,6 +68,11 @@ After naming the autoencoder run ```the first 5 cells```. The cell that trains t
 
 Running the ```last 3 cells``` of the ["AutoEncoderTraining.ipynb"](./srcTom/AutoEncoderTraining.ipynb) notebook will generate embeddings for the dataset generated in step 1. A graph will be displayed below the last cell showing a TSNE graph of your models embeddings space. This graph will be saved into your ```srcTom/Models/MODELSNAME``` folder.
 
+</details>
+
+<details>
+<summary>Evaluate Autoencoder Architecture with Cross Validation</summary>
+
 ## Evaluate Autoencoder Architecture with Cross Validation
 
 Complete [Step 1](#step-1) in the Train An Autoencoder section and then come back for the next steps.
@@ -83,6 +84,11 @@ Go to the notebook named ["AutoEncoderCrossValidation.ipynb"](./srcTom/AutoEncod
 ### Step 2
 
 Run ```all cells in order``` and the results should be printed out in the output of the ```last cell```.
+
+</details>
+
+<details>
+<summary>Train LSTM on Bubble Bobble Embeddings</summary>
 
 ## Train LSTM on Bubble Bobble Embeddings
 
@@ -106,6 +112,11 @@ Training the LSTM will take some time so be patient. After training has finished
 
 Now if you want to generate bubble bobble levels using the trained LSTM follow the [Generate Bubble Bobble Levels with LSTM](#generate-bubble-bobble-levels-with-lstm) section.
 
+</details>
+
+<details>
+<summary>Generate Bubble Bobble Levels with LSTM</summary>
+
 ## Generate Bubble Bobble Levels with LSTM
 
 Ensure you have a trained LSTM model trained on bubble bobble embeddings. There should be one by default in the repository. If not follow the steps in the [Train LSTM on Bubble Bobble Embeddings](#train-lstm-on-bubble-bobble-embeddings) section then come back to complete this section.
@@ -121,6 +132,11 @@ Set the ```RANDOMSEED``` variable to a different number if you want different le
 ### Step 2
 
 Run ```all cells in order``` and ```NUMBEROFLEVELS``` levels should generate and display in the output of the ```last cell```.
+
+</details>
+
+<details>
+<summary>Train LSTM on Lode Runner Embeddings or Raw VGLC Data</summary>
 
 ## Train LSTM on Lode Runner Embeddings or Raw VGLC Data
 
@@ -156,6 +172,11 @@ After training the LSTM model weights will be saved to the path: ```./Models/MOD
 
 Now if you want to generate Lode Runner levels follow the [Generate Lode Runner Levels with LSTM](#generate-lode-runner-levels-with-lstm) section.
 
+</details>
+
+<details>
+<summary>Generate Lode Runner Levels with LSTM</summary>
+
 ## Generate Lode Runner Levels with LSTM
 
 Ensure that you have a LSTM trained on Lode Runner Embeddings or Raw VGLC data to generate Lode Runner levels with. There should be one be default in the repository. If not follow the [Train LSTM on Lode Runner Embeddings or Raw VGLC Data](#train-lstm-on-lode-runner-embeddings-or-raw-vglc-data) section then come back to complete this section.
@@ -172,92 +193,4 @@ Set the ```RANDOMSEED``` variable to a different number if you want different le
 
 Run ```all cells in order``` and ```NUMBEROFLEVELS``` levels should generate and display in the output of the ```last cell```.
 
-# FORKED REPO READ ME
-
-## 1 Data Extraction and Preparation
-**Prerequisites:**
-* Step 0
-
-The training data for our implementation includes five games: *Super Mario Bros, Kid Icarus, Legend of Zelda, Lode Runner, Megaman*. To train the autoencoder for obtain an embedded representation of tile, we draw on local pixel context and the affordances of the candidate tile. 
-
-> 1. Local Pixel Context: To extract the 16 * 16 tiles along with its local context, we slide a 48 * 48 window over the level images. The parent dataset for level images is [VGLC](https://github.com/TheVGLC/TheVGLC). However, level images for some games have extra pixels along the vertical/horizontal axis which result in off-centered tile sprite extraction(demonstrated in fig). We perform prelimnary image manipulations on this dataset to fit the dimensions of such level images. Lode Runner levels has 8 * 8 tile size which we upscaled to 16 * 16 using the [PIL](https://pillow.readthedocs.io/en/stable/) library. We provide the preprocessed dataset directory [vglc](https://github.com/js-mrunal/tile_embeddings/tree/main/data/vglc).
-
-<img src="images/data_extraction.png">
-
-To extract the context for all five games run the following. 
-1. Move to directory: context_extraction
-```
-cd notebooks/
-```
-
-2. Run the following command in shell
-```
-pipenv run python extract_context_data.py
-```
-
-On successful execution of this code, navigate to the folder *data > context_data >*. Each game directory populated with visual local context seperated with sub-directories of tile characters. Each game directory also has an JSON file created. It is a dictionary with key as the centre tile, enlisting all possible neighbourhoods it. 
-
-> 2. Affordances: 
-We define a single, unified set of 13 tags across the games. The tile character to behaviour mapping is provided as [JSON](https://github.com/js-mrunal/tile_embeddings/tree/main/data/json_files_trimmed_features) files. 
-    
-    
-Inputs obtained are as follows: 
-
-<img src="images/inputs.png">
-
-## 2 Autoencoder for Tile Embeddings
-**Prerequisites:**
-* Step 0
-* You can skip Step 1 ONLY IF you want to directly load the provided autoencoder architecture and its pretrained weights (Step (2c)).
-
-Now that we have both our inputs ready, we have to integrate them into a single latent vector representation, which we call *tile embeddings*. To get the embedding, we employ the X-shaped autoencoder architecture. Please find the details of the architecture in our paper. 
-
-2a. The jupyter notebook "notebooks > autoencoder_training.ipynb" provides a step by step guide for autoencoder training. 
-
-2b. You can also run the following commands to train the autoencoder and save the weights:
-
-> Move to the directory: notebooks
-```
-cd notebooks/
-```
-> Run the following command in shell
-```
-pipenv run python autoencoder_training.py
-```
-2c. Load the directly provided architecture and pretrained weights to perform evaluation. Sample Notebook:  
-```
-evaluating_autoencoder_on_text.ipynb
-```
-
-## 3 Unified Level Representation with Tile Embeddings
-**Prerequisites:**
-* Step 0
-* (Optional) Step 1 followed by Step 2 
-
-In this step we convert the levels to the embedding representation using tile embeddings. There are two ways to go about this step. 
-
-3a. If the game data has affordance mapping present, leverage it to get the tile embeddings. The following notebook converts the  levels of all the games in our training dataset into a unified level representation by considering visuals as well as affordances. 
-```
-pipenv run python generate_unified_rep.py
-```
-After the execution of this notebook the embedding representation of the levels for the games *Super Mario Bros, Kid Icarus, Megaman, Legend of Zelda, Lode Runner* will be stored in the directory *data>unified_rep*. 
-
-3b. In case of missing affordances, we provide evidence that the autoencoder can still approximate the embedding vectors (refer paper). To address such datasets, refer the following script
-```
-pipenv run python rep_no_affordances.py
-```
-After the execution of this python code the embedding representation of the *Bubble Bobble* levels will be stored in *data>unified_rep>* 
-
-*Note: Feel free to skip this step and directly use the provided the pickle files. Navigate to data>unified_rep, you will find the embedding representation of the levels for the games: Super Mario Bros, Kid Icarus, Megaman, Legend of Zelda, Lode Runner, Bubble Bobble *
-
-## 4 Generating Level Representation for Bubble Bobble
-**Prerequisites:**
-
-The notebook *bubble_bobble_generation.ipynb* provides step-by-step instructions in detail for generating levels of the game Bubble Bobble using LSTM and tile embeddings.
- 
-
-## How can you contribute to this project?
-
-* Add more data! Training the autoencoder on more games and enriching the corpus 
-* Perform cool experiments with tile embedding, and cite us :)
-* Find bugs and help us make this repository better!
+</details>

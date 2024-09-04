@@ -17,7 +17,7 @@ def get_image(path):
     img_without_border = load_img(path)
     img = Image.open(path)
     img_with_border = ImageOps.expand(img_without_border, border=16, fill="black")
-    return img_without_border, img_with_border
+    return img_without_border, img_without_border
 
 def update_tile_dictionary(
     game, current_level, current_img_padded, save_dir, tile_dictionary):
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     annotation_paths=glob.glob(annotation_dir+"*.txt")
     annotation_identifiers=[x.split("/")[-1].split(".")[0] for x in annotation_paths]
     identifiers=set(image_identifiers).intersection(set(annotation_identifiers))
-    save_dir="../data/context_data/smb/"
+    save_dir="../data/context_data_2/smb/"
     print("Number of levels with annotations detected: ",len(identifiers))
     save_context(game, identifiers, image_dir, image_extension, annotation_dir, save_dir)
 
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     annotation_paths=glob.glob(annotation_dir+"*.txt")
     annotation_identifiers=[x.split("/")[-1].split(".")[0] for x in annotation_paths]
     identifiers=set(image_identifiers).intersection(set(annotation_identifiers))
-    save_dir="../data/context_data/loz/"
+    save_dir="../data/context_data_2/loz/"
     print("Number of levels with annotations detected: ",len(identifiers))
     save_context(game, identifiers, image_dir, image_extension, annotation_dir, save_dir)
 
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     annotation_paths=glob.glob(annotation_dir+"*.txt")
     annotation_identifiers=[x.split("/")[-1].split(".")[0] for x in annotation_paths]
     identifiers=set(image_identifiers).intersection(set(annotation_identifiers))
-    save_dir="../data/context_data/kid_icarus/"
+    save_dir="../data/context_data_2/kid_icarus/"
     print("Number of levels with annotations detected: ",len(identifiers))
     save_context(game, identifiers, image_dir, image_extension, annotation_dir, save_dir)
 
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     annotation_paths = glob.glob("../data/vglc/MegaMan/*.txt")
     annotation_identifiers = [x.split("/")[-1].split(".")[0] for x in annotation_paths]
     identifiers = set(image_identifiers).intersection(set(annotation_identifiers))
-    save_dir = "../data/context_data/megaman/"
+    save_dir = "../data/context_data_2/megaman/"
     print("Number of levels with annotations detected: ", len(identifiers))
     save_context(game, identifiers, image_dir, image_extension, annotation_dir, save_dir)
 
@@ -125,7 +125,7 @@ if __name__ == "__main__":
     for image_path in image_paths:
         level_id=image_path.split("/")[-1].split(".")[0]
         identifiers.append(level_id)
-    save_dir="../data/context_data/lode_runner/"
+    save_dir="../data/context_data_2/lode_runner/"
     print("Number of levels with annotations detected: ",len(identifiers))
     save_context(game, identifiers, image_dir, image_extension, annotation_dir, save_dir)
 

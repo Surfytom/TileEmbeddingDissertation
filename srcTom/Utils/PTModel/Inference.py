@@ -78,7 +78,7 @@ def SaveLevelUnifiedRepresentation(model, levelData, modelName, gameName, afford
     np.save(f"Models/{modelName}/LevelUnifiedRep/{gameName}/embeddings.npy", np.array(embeddings))
 
 @torch.no_grad()
-def ModelInference(model, data, clampTextOutput=True, modelName=""):
+def ModelInference(model, data, clampTextOutput=True, modelName="", affordanceZeroed=False):
 
     if model == None and modelName != "":
         model = torch.load(f"Models/{modelName}.pt")
@@ -97,7 +97,10 @@ def ModelInference(model, data, clampTextOutput=True, modelName=""):
     yImageBatch = yImageBatch.reshape((-1, 3, 16, 16))
     yImageBatch = yImageBatch.to(device)
     
-    xTextbatch = torch.tensor(data["encodedAffordances"].tolist(), dtype=torch.float32).to(device)
+    if affordanceZeroed:
+        xTextbatch = torch.zeros(size=(xImages.size()[0], 13), dtype=torch.float32)
+    else:
+        xTextbatch = torch.tensor(data["encodedAffordances"].tolist(), dtype=torch.float32).to(device)
 
     yPredImages, yPredText = model(xImageBatch, xTextbatch)
 
