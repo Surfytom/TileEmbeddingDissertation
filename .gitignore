@@ -2,19 +2,22 @@ data/context_data
 data/*.csv
 data/*.pickle
 
-data/tomData/*
+data/*
 src/test.csv
 
 outputs/*
 
-srcTom/testrep/*
-srcTom/lrLSTMData
+src/testrep/*
+src/lrLSTMData
 
-data/unified_rep/bubble_bobble_2
-srcTom/MHArep
-srcTom/SecondTry
-srcTom/SecondTryTanH
-srcTom/Models
+src/MHArep
+src/SecondTry
+src/SecondTryTanH
+src/Models
+
+!src/Models/AutoEncoderwATT/AutoEncoderwATT.pt
+
+!data/AffordanceTrainDataDictionary.pickle
 
 *.pyc
 
