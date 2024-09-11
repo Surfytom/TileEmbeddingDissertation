@@ -1,21 +1,9 @@
-data/context_data
 data/*.csv
-data/*.pickle
-
-data/*
-src/test.csv
-
-outputs/*
-
-src/testrep/*
-src/lrLSTMData
-
-src/MHArep
-src/SecondTry
-src/SecondTryTanH
-src/Models
 
 !src/Models/AutoEncoderwATT/AutoEncoderwATT.pt
+src/Models/*/LevelUnifiedRep
+src/Models/*/LRLSTMData
+src/Models/*/UnifiedRep
 
 !data/AffordanceTrainDataDictionary.pickle
 
