@@ -56,17 +56,17 @@ This section covers how to setup the repository and generate training data to th
 
 ### Step 1
 
-Run the first 3 cells of the notebook named ["AutoEncoderTrainingDataGeneration.ipynb"](./srcTom/AutoEncoderTrainingDataGeneration.ipynb). This will generate the csv file: ```../data/tomData/unshuffled3x3tiles.csv```. You can rename this file but remember to change where this file path is referenced in other notebooks.
+Run the first 3 cells of the notebook named ["AutoEncoderTrainingDataGeneration.ipynb"](./src/AutoEncoderTrainingDataGeneration.ipynb). This will generate the csv file: ```../data/tomData/unshuffled3x3tiles.csv```. You can rename this file but remember to change where this file path is referenced in other notebooks.
 
 ### Step 2
 
-Now go to the notebook named ["AutoEncoderTraining.ipynb"](./srcTom/AutoEncoderTraining.ipynb). Make sure you select a unique model name by changing the ```MODELNAME``` variable in the ```first cell```. This name will be used throughout the notebooks to load appropriate data from your trained autoencoder.
+Now go to the notebook named ["AutoEncoderTraining.ipynb"](./src/AutoEncoderTraining.ipynb). Make sure you select a unique model name by changing the ```MODELNAME``` variable in the ```first cell```. This name will be used throughout the notebooks to load appropriate data from your trained autoencoder.
 
-After naming the autoencoder run ```the first 5 cells```. The cell that trains the autoencoder will take a while especially on older machines so be patient. After it's finished training the model weights should be saved in the path ```srcTom/Models/MODELNAME/MODELNAME.pt```.
+After naming the autoencoder run ```the first 5 cells```. The cell that trains the autoencoder will take a while especially on older machines so be patient. After it's finished training the model weights should be saved in the path ```src/Models/MODELNAME/MODELNAME.pt```.
 
 **Optional TSNE Visualization**
 
-Running the ```last 3 cells``` of the ["AutoEncoderTraining.ipynb"](./srcTom/AutoEncoderTraining.ipynb) notebook will generate embeddings for the dataset generated in step 1. A graph will be displayed below the last cell showing a TSNE graph of your models embeddings space. This graph will be saved into your ```srcTom/Models/MODELSNAME``` folder.
+Running the ```last 3 cells``` of the ["AutoEncoderTraining.ipynb"](./src/AutoEncoderTraining.ipynb) notebook will generate embeddings for the dataset generated in step 1. A graph will be displayed below the last cell showing a TSNE graph of your models embeddings space. This graph will be saved into your ```src/Models/MODELSNAME``` folder.
 
 </details>
 
@@ -79,7 +79,7 @@ Complete [Step 1](#step-1) in the Train An Autoencoder section and then come bac
 
 ### Step 1
 
-Go to the notebook named ["AutoEncoderCrossValidation.ipynb"](./srcTom/AutoEncoderCrossValidation.ipynb). Make sure the variable ```MODELARCH``` in the ```first cell``` is set to the autoencoder architecture you want to test. The choices of model architectures are ```Models.TileEmbeddingVAE```, ```Models.TileEmbeddingVAEwMHA``` or a custom model with the same input and output shapes.
+Go to the notebook named ["AutoEncoderCrossValidation.ipynb"](./src/AutoEncoderCrossValidation.ipynb). Make sure the variable ```MODELARCH``` in the ```first cell``` is set to the autoencoder architecture you want to test. The choices of model architectures are ```Models.TileEmbeddingVAE```, ```Models.TileEmbeddingVAEwMHA``` or a custom model with the same input and output shapes.
 
 ### Step 2
 
@@ -96,7 +96,7 @@ Make sure you have a trained autoencoder that can generate embeddings. There sho
 
 ### Step 1
 
-Open the notebook named ["BubbleBobbleLevelUnifiedRepGeneration.ipynb"](./srcTom/BubbleBobbleLevelUnifiedRepGeneration.ipynb). Make sure the variable ```MODELNAME``` in the ```first cell``` is set to the autoencoder you want to use to generate the bubble bobble level embeddings.
+Open the notebook named ["BubbleBobbleLevelUnifiedRepGeneration.ipynb"](./src/BubbleBobbleLevelUnifiedRepGeneration.ipynb). Make sure the variable ```MODELNAME``` in the ```first cell``` is set to the autoencoder you want to use to generate the bubble bobble level embeddings.
 
 ### Step 2
 
@@ -104,7 +104,7 @@ Run ```all cells in order```. This should generate the folder ```./Models/MODELN
 
 ### Step 3
 
-Open the notebook named ["BubbleBobbleLSTMTraining.ipynb"](./srcTom/BubbleBobbleLSTMTraining.ipynb). Ensure the ```MODELNAME``` variable in the ```first cell``` is the same as used in previous steps. 
+Open the notebook named ["BubbleBobbleLSTMTraining.ipynb"](./src/BubbleBobbleLSTMTraining.ipynb). Ensure the ```MODELNAME``` variable in the ```first cell``` is the same as used in previous steps. 
 
 Then ```run all cells in order```. 
 
@@ -123,7 +123,7 @@ Ensure you have a trained LSTM model trained on bubble bobble embeddings. There 
 
 ### Step 1
 
-Open the notebook named ["BubbleBobbleLSTMGeneration.ipynb"](./srcTom/BubbleBobbleLSTMGeneration.ipynb). Once opened ensure the ```MODELNAME``` is set to the embedding model named used to generate the bubble bobble levels embeddings **NOT THE NAME OF THE LSTM MODEL WEIGHT FILE**.
+Open the notebook named ["BubbleBobbleLSTMGeneration.ipynb"](./src/BubbleBobbleLSTMGeneration.ipynb). Once opened ensure the ```MODELNAME``` is set to the embedding model named used to generate the bubble bobble levels embeddings **NOT THE NAME OF THE LSTM MODEL WEIGHT FILE**.
 
 Set the ```NUMBEROFLEVELS``` variable to the amount of levels you want to generate.
 
@@ -146,7 +146,7 @@ Most notebooks in this section have 2 variants. The VGLC enabled you to use Raw 
 
 ### Step 1
 
-Open the notebook named ["LodeRunnerLevelUnifiedRepGeneration.ipynb"](./srcTom/LodeRunnerLevelUnifiedRepGeneration.ipynb). Edit the variable ```MODELNAME``` to match the embedding model you want to use.
+Open the notebook named ["LodeRunnerLevelUnifiedRepGeneration.ipynb"](./src/LodeRunnerLevelUnifiedRepGeneration.ipynb). Edit the variable ```MODELNAME``` to match the embedding model you want to use.
 
 ### Step 2
 
@@ -154,7 +154,7 @@ Run ```all cells in order```. You should now have the folder ```./Models/MODELNA
 
 ### Step 3
 
-Open the notebook named ["LodeRunnerLSTMTrainingDataGeneration.ipynb"](./srcTom/LodeRunnerLSTMTrainingDataGeneration.ipynb). Edit the variable ```MODELNAME``` to match the embedding model you used in ```step 1```.
+Open the notebook named ["LodeRunnerLSTMTrainingDataGeneration.ipynb"](./src/LodeRunnerLSTMTrainingDataGeneration.ipynb). Edit the variable ```MODELNAME``` to match the embedding model you used in ```step 1```.
 
 Now run the ```first cell```. You will then see two titles. One for embeddings training data generation and one for raw VGLC training data generation. Decide which one you need to use (most likely embedding generation) and run ```all cells in order below the chosen title```.
 
@@ -162,7 +162,7 @@ This will take a while to complete but you should see batches of training data b
 
 ### Step 4
 
-Open the notebook named ["LodeRunnerLSTMTrainingEmbed.ipynb"](./srcTom/LodeRunnerLSTMTrainingEmbed.ipynb)/["LodeRunnerLSTMTrainingVGLC.ipynb"](./srcTom/LodeRunnerLSTMTrainingVGLC.ipynb). Edit the variable ```MODELNAME``` to match the embedding model you used in ```step 1```.
+Open the notebook named ["LodeRunnerLSTMTrainingEmbed.ipynb"](./src/LodeRunnerLSTMTrainingEmbed.ipynb)/["LodeRunnerLSTMTrainingVGLC.ipynb"](./src/LodeRunnerLSTMTrainingVGLC.ipynb). Edit the variable ```MODELNAME``` to match the embedding model you used in ```step 1```.
 
 Then run ```all cells in order```.
 
@@ -183,7 +183,7 @@ Ensure that you have a LSTM trained on Lode Runner Embeddings or Raw VGLC data t
 
 ### Step 1
 
-Open the notebook named ["LodeRunnerLSTMGenerationEmbed.ipynb"](./srcTom/LodeRunnerLSTMGenerationEmbed.ipynb)/["LodeRunnerLSTMGenerationVGLC.ipynb"](./srcTom/LodeRunnerLSTMGenerationVGLC.ipynb). Once opened ensure the ```MODELNAME``` is set to the embedding model named used to generate the Lode Runner levels embeddings **NOT THE NAME OF THE LSTM MODEL WEIGHT FILE**.
+Open the notebook named ["LodeRunnerLSTMGenerationEmbed.ipynb"](./src/LodeRunnerLSTMGenerationEmbed.ipynb)/["LodeRunnerLSTMGenerationVGLC.ipynb"](./src/LodeRunnerLSTMGenerationVGLC.ipynb). Once opened ensure the ```MODELNAME``` is set to the embedding model named used to generate the Lode Runner levels embeddings **NOT THE NAME OF THE LSTM MODEL WEIGHT FILE**.
 
 Set the ```NUMBEROFLEVELS``` variable to the amount of levels you want to generate.
 
