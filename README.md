@@ -1,4 +1,4 @@
-# Title: WIP
+# Title: Tile Embedding Dissertation
 
 This repo is a forked version of the [tile embedding repository](https://github.com/js-mrunal/tile_embeddings) which is created by one of the authors (Mrunal Jadhav) of the paper it partly implements [tile embedding paper](https://ojs.aaai.org/index.php/AIIDE/article/view/18888).
 
